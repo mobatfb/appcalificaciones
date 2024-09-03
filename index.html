@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta http-equiv="refresh" content="30"> -->
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="fullCenter ">
+        <h1>CRIMINALÍSTICA</h1>
+        <h2>CALIFICACIONES OFIMÁTICA</h2>
+        <div>
+            <h4>Número de cédula
+                <input id="inputCedula" type="text">
+                <button onclick="search()">Buscar</button>
+            </h4>
+        </div>
+        <div>
+            <center>
+                <h3 id="nombre"></h3>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th colspan="6">Suma de Parciales</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>Foros</th>
+                            <th>Tarea</th>
+                            <th>Participación</th>
+                            <th>Evaluación</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align: right;">
+                        <tr>
+                            <td>Parcial 1</td>
+                            <td><span id="forosp1">0</span></td>
+                            <td><span id="tareasp1">0</span></td>
+                            <td><span id="participacionp1">0</span></td>
+                            <td><span id="evaluacionp1">0</span></td>
+                            <td><span id="totalp1">0</span></td>
+                        </tr>
+                        <tr>
+                            <td>Parcial 2</td>
+                            <td><span id="forosp2">0</span></td>
+                            <td><span id="tareasp2">0</span></td>
+                            <td><span id="participacionp2">0</span></td>
+                            <td><span id="evaluacionp2">0</span></td>
+                            <td><span id="totalp2">0</span></td>
+                        </tr>
+                        <tr>
+                            <td>Parcial 3</td>
+                            <td><span id="forosp3">0</span></td>
+                            <td><span id="tareasp3">0</span></td>
+                            <td><span id="participacionp3">0</span></td>
+                            <td><span id="evaluacionp3">0</span></td>
+                            <td><span id="totalp3">0</span></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="5" style="text-align: right;">Suma de Parciales</th>
+                            <td style="text-align: center;"><span id="totalParciales">0</span></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <br>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Calificación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="text-align: right;">Suma de Parciales</td>
+                            <td style="text-align: center;"><span id="sumaparciales">0</span></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">Examen Final</td>
+                            <td style="text-align: center;"><span id="examenFinal">0</span></td>
+                        </tr>
+                        <tr>
+                            <th style="text-align: right;">Suma Total</th>
+                            <th><span id="sumaTotal">0</span></th>
+                        </tr>
+                    </tbody>
+                </table>
+            </center>
+        </div>
+    </div>
+    <script src="functions.js"></script>
+    <script src="basedata/0-databaseNombres.js"></script>
+    <script src="basedata/1-databaseParcial1.js"></script>
+    <script src="basedata/2-databaseParcial2.js"></script>
+    <script src="basedata/3-databaseParcial3.js"></script>
+    <script src="basedata/4-databaseExamenFinal.js"></script>
+    <script>
+        function search() {
+            var inputCedula = document.getElementById("inputCedula").value;
+            var nombres = returnData(inputCedula, 'nombres')
+            document.getElementById('nombre').innerHTML = nombres.nombre + " " + nombres.apellido
+            var parcial1 = returnData(inputCedula, 'parcial1')
+            var parcial2 = returnData(inputCedula, 'parcial2')
+            var parcial3 = returnData(inputCedula, 'parcial3')
+            var examenFinal = returnData(inputCedula, 'examenFinal')
+            setParcial(1, parcial1)
+            setParcial(2, parcial2)
+            setParcial(3, parcial3)
+            setSumaParciales(parcial1, parcial2, parcial3)
+            setExamenFinal(examenFinal.examenFinal)
+            setSumaTotal(parcial1, parcial2, parcial3, examenFinal.examenFinal)
+        }
+        function setParcial(num, data) {
+            document.getElementById('forosp' + num).innerHTML = data.foros
+            document.getElementById('tareasp' + num).innerHTML = data.tareas
+            document.getElementById('participacionp' + num).innerHTML = data.participacion
+            document.getElementById('evaluacionp' + num).innerHTML = data.evaluacion
+            document.getElementById('totalp' + num).innerHTML = (data.foros + data.tareas + data.participacion + data.evaluacion)
+        }
+        function setSumaParciales(parcial1, parcial2, parcial3) {
+            var totalP1 = parcial1.foros + parcial1.tareas + parcial1.participacion + parcial1.evaluacion
+            var totalP2 = parcial2.foros + parcial2.tareas + parcial2.participacion + parcial2.evaluacion
+            var totalP3 = parcial3.foros + parcial3.tareas + parcial3.participacion + parcial3.evaluacion
+            var totalParciales = (totalP1 + totalP2 + totalP3).toString()
+            if (totalParciales.length > 5) {
+                totalParciales = totalParciales[0] + totalParciales[1] + totalParciales[2] + totalParciales[3] + totalParciales[4];
+            }
+            document.getElementById('totalParciales').innerHTML = totalParciales
+            document.getElementById('sumaparciales').innerHTML = totalParciales
+        }
+        function setExamenFinal(data) {
+            document.getElementById('examenFinal').innerHTML = data
+        }
+        function setSumaTotal(parcial1, parcial2, parcial3, examenFinal) {
+            var totalP1 = parcial1.foros + parcial1.tareas + parcial1.participacion + parcial1.evaluacion
+            var totalP2 = parcial2.foros + parcial2.tareas + parcial2.participacion + parcial2.evaluacion
+            var totalP3 = parcial3.foros + parcial3.tareas + parcial3.participacion + parcial3.evaluacion
+            var totalParciales = (totalP1 + totalP2 + totalP3)
+            var sumaTotal = (totalParciales + examenFinal).toString();
+            if (sumaTotal.length > 5) {
+                sumaTotal = sumaTotal[0] + sumaTotal[1] + sumaTotal[2] + sumaTotal[3] + sumaTotal[4];
+            }
+            document.getElementById('sumaTotal').innerHTML = sumaTotal;
+
+        }
+
+
+    </script>
+</body>
+
+</html>
